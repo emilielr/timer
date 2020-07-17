@@ -5,7 +5,7 @@
     <Button buttonText="Action"/>
     <Button buttonText="Break"/>-->
     <Button buttonText="Start"/>
-    <button @click="startTimer">Start</button>
+    <button @click="calculate">Start</button>
     <button @click="pauseTimer">Pause</button>
     <button @click="resetTimer">Reset</button>
     <br><br>
@@ -75,6 +75,10 @@ export default {
       clearInterval(this.interval);
       this.timePassed = 0;
       this.timeLimit = this.action;
+      this.finishedSets = 0;
+      this.sets = 0;
+      this.pause = null;
+      this.action = 0;
     },
     countdownTimer() {
       if (this.timerRunning == true) {
@@ -83,21 +87,39 @@ export default {
         if (this.timePassed >= this.timeLimit) {
           clearInterval(this.interval);
 
+          // For only 1 set (without breaks)
+          if (this.finishedSets == 0 && this.pause == 0) {
+            console.log("heihei")
+            this.finishedSets++;
+          }
+
+          if (this.finishedSets == 0 && this.pause != 0) {
+            console.log(" du har pauser")
+            this.finishedSets++;
+          }
+
           // Code for interpreting with break inbetween sets
           // If the number is even, we know it should not be a pause
-
           if (this.finishedSets % 2 == 0) {
             this.timeLimit = this.action;
             console.log("action")
           } else {
-            this.timeLimit = this.pause;
+            // TODO: I added this if-statement and now it stops at the correct time, but it must be a better way
+            // Has to check if timer has breaks or not to set the timeLimit properly and get correct time
+            if (this.finishedSets != this.sets) {
+              if (this.pause != 0) {
+                this.timeLimit = this.pause;
+              }
+            }
             console.log("break")
           }
-          // Code below for doing repeating countdowns depending on numbers of sets
+
+          // Code for doing repeating countdowns depending on numbers of sets
           this.finishedSets++;
           console.log("sets til nå: " + this.finishedSets)
           console.log("dette er time limit nå: " + this.timeLimit)
           if (this.finishedSets <= this.sets) {
+            
             console.log("går du inn her?")
             this.timerRunning = false;
             this.timePassed = 0;
@@ -118,12 +140,19 @@ export default {
 
       if (pause > 0) {
         this.sets = sets * 2 - 1;
+      } else if (isNaN(sets)) {
+        this.sets = 0;
       } else {
         this.sets = sets;
       }
+
+      if (isNaN(pause)) {
+        this.pause = 0;
+      } else {
+        this.pause = pause;
+      }
       
       this.timeLimit = action;
-      this.pause = pause;
       this.action = action;
 
       console.log("Antall sets med action+pause: " + this.sets)
@@ -132,7 +161,7 @@ export default {
       console.log("finished sets: " + this.finishedSets)
       
       this.startTimer();
-      this.finishedSets++; // +1 finishied sets so we won't "start over" twice
+      //this.finishedSets++; // +1 finished sets so we won't "start over" twice
     },
   },
 }
