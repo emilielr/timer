@@ -80,13 +80,12 @@ export default {
       if (this.timerRunning == true) {
         this.timePassed++;
         console.log(this.timePassed)
-        if (this.timePassed > this.timeLimit) {
+        if (this.timePassed >= this.timeLimit) {
           clearInterval(this.interval);
 
           // Code for interpreting with break inbetween sets
           // If the number is even, we know it should not be a pause
 
-          // TODO: pause nr 1 har samme tid som action. etter det går det greit
           if (this.finishedSets % 2 == 0) {
             this.timeLimit = this.action;
             console.log("action")
@@ -98,7 +97,8 @@ export default {
           this.finishedSets++;
           console.log("sets til nå: " + this.finishedSets)
           console.log("dette er time limit nå: " + this.timeLimit)
-          if (this.finishedSets < this.sets) {
+          if (this.finishedSets <= this.sets) {
+            console.log("går du inn her?")
             this.timerRunning = false;
             this.timePassed = 0;
             this.startTimer();
@@ -125,14 +125,14 @@ export default {
       this.timeLimit = action;
       this.pause = pause;
       this.action = action;
-      this.finishedSets = 1;
 
       console.log("Antall sets med action+pause: " + this.sets)
       console.log("Action: " + this.action)
       console.log("Break: " + this.pause);
+      console.log("finished sets: " + this.finishedSets)
       
       this.startTimer();
-
+      this.finishedSets++; // +1 finishied sets so we won't "start over" twice
     },
   },
 }
