@@ -89,12 +89,12 @@ export default {
 
           // For only 1 set (without breaks)
           if (this.finishedSets == 0 && this.pause == 0) {
-            console.log("heihei")
+            console.log("You do not have any breaks")
             this.finishedSets++;
           }
 
           if (this.finishedSets == 0 && this.pause != 0) {
-            console.log(" du har pauser")
+            console.log("You have breaks")
             this.finishedSets++;
           }
 
@@ -102,7 +102,7 @@ export default {
           // If the number is even, we know it should not be a pause
           if (this.finishedSets % 2 == 0) {
             this.timeLimit = this.action;
-            console.log("action")
+            console.log("Next is action")
           } else {
             // TODO: I added this if-statement and now it stops at the correct time, but it must be a better way
             // Has to check if timer has breaks or not to set the timeLimit properly and get correct time
@@ -111,16 +111,14 @@ export default {
                 this.timeLimit = this.pause;
               }
             }
-            console.log("break")
+            console.log("Next is break")
           }
 
           // Code for doing repeating countdowns depending on numbers of sets
           this.finishedSets++;
-          console.log("sets til nå: " + this.finishedSets)
-          console.log("dette er time limit nå: " + this.timeLimit)
+          console.log("Finished sets: " + this.finishedSets)
+          console.log("Time limit: " + this.timeLimit)
           if (this.finishedSets <= this.sets) {
-            
-            console.log("går du inn her?")
             this.timerRunning = false;
             this.timePassed = 0;
             this.startTimer();
@@ -155,13 +153,12 @@ export default {
       this.timeLimit = action;
       this.action = action;
 
-      console.log("Antall sets med action+pause: " + this.sets)
+      console.log("Number of sets (action + breaks): " + this.sets)
       console.log("Action: " + this.action)
       console.log("Break: " + this.pause);
-      console.log("finished sets: " + this.finishedSets)
+      console.log("Finished sets: " + this.finishedSets)
       
       this.startTimer();
-      //this.finishedSets++; // +1 finished sets so we won't "start over" twice
     },
   },
 }
