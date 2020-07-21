@@ -16,7 +16,7 @@
      <label for="setBreak">Break: </label>
     <input id="setBreak" type ="number">
     <input type="submit" value="calc set" @click="calculate">
-    <p>Du har gjennomførst {{finishedSets}} antall sets</p>
+    <p>Du har gjennomført {{finishedActionSets}} antall sets</p>
   </div>
 </template>
 
@@ -37,10 +37,12 @@ export default {
       timePassed: 0,
       interval: null,
       timerRunning: false,
+      totalSets: 0,
       sets: 0,
       action: 0,
       pause: 0,
       finishedSets: 0,
+      finishedActionSets: 0,
     }
   },
 
@@ -76,9 +78,11 @@ export default {
       this.timePassed = 0;
       this.timeLimit = this.action;
       this.finishedSets = 0;
-      this.sets = 0;
-      this.pause = null;
+      this.totalSets = 0;
+      this.pause = 0;
       this.action = 0;
+      this.sets = 0;
+      this.finishedActionSets = 0;
     },
     countdownTimer() {
       if (this.timerRunning == true) {
@@ -86,18 +90,11 @@ export default {
         console.log(this.timePassed)
         if (this.timePassed >= this.timeLimit) {
           clearInterval(this.interval);
-
-          // For only 1 set (without breaks)
-          if (this.finishedSets == 0 && this.pause == 0) {
-            console.log("You do not have any breaks")
+          
+          if (this.finishedSets == 0) {
             this.finishedSets++;
           }
-
-          if (this.finishedSets == 0 && this.pause != 0) {
-            console.log("You have breaks")
-            this.finishedSets++;
-          }
-
+         
           // Code for interpreting with break inbetween sets
           // If the number is even, we know it should not be a pause
           if (this.finishedSets % 2 == 0) {
@@ -106,11 +103,12 @@ export default {
           } else {
             // TODO: I added this if-statement and now it stops at the correct time, but it must be a better way
             // Has to check if timer has breaks or not to set the timeLimit properly and get correct time
-            if (this.finishedSets != this.sets) {
+            if (this.finishedSets != this.totalSets) {
               if (this.pause != 0) {
                 this.timeLimit = this.pause;
               }
             }
+            this.finishedActionSets++;
             console.log("Next is break")
           }
 
@@ -118,7 +116,7 @@ export default {
           this.finishedSets++;
           console.log("Finished sets: " + this.finishedSets)
           console.log("Time limit: " + this.timeLimit)
-          if (this.finishedSets <= this.sets) {
+          if (this.finishedSets <= this.totalSets) {
             this.timerRunning = false;
             this.timePassed = 0;
             this.startTimer();
@@ -126,22 +124,18 @@ export default {
         }
       }
     },
-    setTimer() {
-      var minutes = document.getElementById("setMinutes").value;
-      var seconds = document.getElementById("setSeconds").value;
-      this.timeLimit = +minutes*60 + +seconds;
-    },
+    
     calculate() {
       var sets = parseInt(document.getElementById("setSets").value);
       var action = parseInt(document.getElementById("setAction").value);
       var pause = parseInt(document.getElementById("setBreak").value);
 
       if (pause > 0) {
-        this.sets = sets * 2 - 1;
+        this.totalSets = sets * 2 - 1;
       } else if (isNaN(sets)) {
-        this.sets = 0;
+        this.totalSets = 0;
       } else {
-        this.sets = sets;
+        this.totalSets = sets;
       }
 
       if (isNaN(pause)) {
@@ -153,7 +147,7 @@ export default {
       this.timeLimit = action;
       this.action = action;
 
-      console.log("Number of sets (action + breaks): " + this.sets)
+      console.log("Number of sets (action + breaks): " + this.totalSets)
       console.log("Action: " + this.action)
       console.log("Break: " + this.pause);
       console.log("Finished sets: " + this.finishedSets)
