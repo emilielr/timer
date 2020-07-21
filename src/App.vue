@@ -4,18 +4,18 @@
     <!--<Button buttonText="Sets"/>
     <Button buttonText="Action"/>
     <Button buttonText="Break"/>-->
-    <Button buttonText="Start"/>
+    <Button @click="calculate" buttonText="Start" />
     <button @click="calculate">Start</button>
     <button @click="pauseTimer">Pause</button>
     <button @click="resetTimer">Reset</button>
     <br><br>
     <label for="setSets">Sets: </label>
-    <input id="setSets" type ="number">
+    <input id="setSets" type ="number" min="0" required>
     <label for="setAction">Action: </label>
-    <input id="setAction" type ="number">
+    <input id="setAction" type ="number" min="0">
      <label for="setBreak">Break: </label>
-    <input id="setBreak" type ="number">
-    <input type="submit" value="calc set" @click="calculate">
+    <input id="setBreak" type ="number" min="0">
+    <input type="submit" value="Start timer" @click="calculate">
     <p>Du har gjennomført {{finishedActionSets}} antall sets</p>
   </div>
 </template>
@@ -130,31 +130,42 @@ export default {
       var action = parseInt(document.getElementById("setAction").value);
       var pause = parseInt(document.getElementById("setBreak").value);
 
-      if (pause > 0) {
-        this.totalSets = sets * 2 - 1;
-      } else if (isNaN(sets)) {
-        this.totalSets = 0;
-      } else {
-        this.totalSets = sets;
-      }
+      if (this.dataIsValid(sets, action, pause)) {
+        if (pause > 0) {
+          this.totalSets = sets * 2 - 1;
+        } else if (isNaN(sets)) {
+          this.totalSets = 0;
+        } else {
+          this.totalSets = sets;
+        }
 
-      if (isNaN(pause)) {
-        this.pause = 0;
+        if (isNaN(pause)) {
+          this.pause = 0;
+        } else {
+          this.pause = pause;
+        }
+        
+        this.timeLimit = action;
+        this.action = action;
+
+        console.log("Number of sets (action + breaks): " + this.totalSets)
+        console.log("Action: " + this.action)
+        console.log("Break: " + this.pause);
+        console.log("Finished sets: " + this.finishedSets)
+        
+        this.startTimer();
       } else {
-        this.pause = pause;
+        alert("Data is invalid");
       }
       
-      this.timeLimit = action;
-      this.action = action;
-
-      console.log("Number of sets (action + breaks): " + this.totalSets)
-      console.log("Action: " + this.action)
-      console.log("Break: " + this.pause);
-      console.log("Finished sets: " + this.finishedSets)
-      
-      this.startTimer();
     },
-  },
+    dataIsValid(sets, action, pause) {
+      if (sets < 0 || action < 0 || pause < 0 || isNaN(action)) {
+        return false;
+      }
+      return true;
+    },
+  }
 }
 </script>
 
